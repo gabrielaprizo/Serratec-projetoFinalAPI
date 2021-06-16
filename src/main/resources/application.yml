@@ -1,0 +1,36 @@
+spring:
+  profiles:
+    active: development
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/produtos # Para ambientes dockerizados, deve-se utilizar o nome do container, ao invés de localhost.
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update # Quando você for iniciar a aplicação pela primeira vez, mude de "update" para "create"
+    show-sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    generate-ddl: true
+# Logger configuration
+logging:
+  pattern:
+    console: "%d %-5level %logger : %msg%n"
+  level:
+    org:
+      springframework: debug
+      hibernate: debug
+# Server configuration
+server:
+  port: 8088
+  servlet:
+    context-path: /api
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs.yaml

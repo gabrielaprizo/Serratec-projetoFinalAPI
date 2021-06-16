@@ -1,0 +1,45 @@
+version: '3.8'
+networks:
+  backend:
+    name: produtos_backend
+    driver: bridge
+volumes:
+  postgres_data:
+    driver: local
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: produtos_api
+    ports:
+      - "8088:8088"
+    networks:
+      - backend
+    depends_on:
+      - db
+    healthcheck:
+      test: curl -f http://localhost:8088/api/produtos || exit 1
+      interval: 1m
+      timeout: 10s
+      retries: 2
+  db:
+    image: postgres:12
+    container_name: postgres-db
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: produtos
+      PGDATA: /var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 1m
+      timeout: 10s
+      retries: 2
